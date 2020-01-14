@@ -19,6 +19,8 @@
                 height: 400px;
             }
         </style>
+
+        <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
         <div id="screen-container">
@@ -32,16 +34,25 @@
             import createKeyboardListener from './keyboard-listener.js'
             import renderScreen from './render-screen.js'
 
-
             const game = createGame()
             const keyboardListener = createKeyboardListener(document)
             keyboardListener.subscribe(game.movePlayer) 
 
-            game.addPlayer({playerId: "player1", playerX: 0, playerY: 0, playerW: 1, playerH: 1})
-            game.addFruit({fruitId: "fruit1", fruitX: 2, fruitY: 2, fruitW: 1, fruitH: 1})
-            game.addFruit({fruitId: "fruit2", fruitX: 7, fruitY: 7, fruitW: 1, fruitH: 1})
-
             renderScreen(screen, game, requestAnimationFrame)
+
+            const socket = io()
+
+            socket.on('connect', () => {
+                const playerId = socket.id
+                console.log(`> Player connected on Client with id ${playerId}`)
+            })
+
+            socket.on('setup', (state) => {
+                console.log('> Receiving "setup" event from server')
+                console.log(state)
+
+                game.state = state
+            })
         </script>
     </body>
 </html>
