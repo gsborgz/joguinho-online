@@ -11,17 +11,27 @@ app.use(express.static('public'))
 
 const game = createGame()
 
-game.addPlayer({playerId: "player1", playerX: 0, playerY: 0, playerW: 1, playerH: 1})
-game.addFruit({fruitId: "fruit1", fruitX: 2, fruitY: 2, fruitW: 1, fruitH: 1})
-game.addFruit({fruitId: "fruit2", fruitX: 7, fruitY: 7, fruitW: 1, fruitH: 1})
-
-console.log(game.state)
+game.subscribe((command) => {
+    sockets.emit(command.type, command)
+}) 
 
 sockets.on('connection', (socket) => {
     const playerId = socket.id
-    console.log(`Player connected on Server with id ${playerId}`)
+    
+    game.addPlayer({ playerId: playerId })
 
     socket.emit('setup', game.state)
+
+    socket.on('disconnect', () => {
+        game.removePlayer({ playerId : playerId})
+    })
+
+    socket.on('move-player', (command) => {
+        command.playerId = playerId
+        command.type = 'move-player'
+
+        game.movePlayer(command)
+    })
 })
 
 server.listen(3000, () => {
