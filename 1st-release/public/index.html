@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Joguin</title>
+
+        <style>
+            #screen-container {
+                width: 100%;
+                text-align: center;
+            }
+
+            #screen {
+                border: 10px solid #CCC;
+                image-rendering: pixelated;
+                image-rendering: crisp-edges;
+                image-rendering: -moz-crisp-edges;
+                width: 400px;
+                height: 400px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="screen-container">
+            <canvas id="screen" width="10" height="10"></canvas>
+        </div>
+
+        <script type="module">
+            const screen = document.getElementById('screen')
+            
+            import createGame from './game.js'
+            import createKeyboardListener from './keyboard-listener.js'
+            import renderScreen from './render-screen.js'
+
+
+            const game = createGame()
+            const keyboardListener = createKeyboardListener(document)
+            keyboardListener.subscribe(game.movePlayer) 
+
+            game.addPlayer({playerId: "player1", playerX: 0, playerY: 0, playerW: 1, playerH: 1})
+            game.addFruit({fruitId: "fruit1", fruitX: 2, fruitY: 2, fruitW: 1, fruitH: 1})
+            game.addFruit({fruitId: "fruit2", fruitX: 7, fruitY: 7, fruitW: 1, fruitH: 1})
+
+            renderScreen(screen, game, requestAnimationFrame)
+        </script>
+    </body>
+</html>
