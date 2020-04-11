@@ -3,7 +3,7 @@ Clonar o projeto:
 `git clone https://github.com/gabrielSBorges/joguinho-online.git`
 
 Entrar na pasta do projeto:
-`cd 1st-release/joguinho-online`
+`cd joguinho-online/1st-release`
 
 Instalar as dependências
 `npm install`
